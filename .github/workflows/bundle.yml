@@ -1,0 +1,35 @@
+name: Build bundle
+
+on:
+  # This is intentionally schedule-only: the workflow exists on main, so a push
+  # to backend, frontend, or cli cannot run a push-triggered copy from that branch.
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main with submodules
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          submodules: true
+          fetch-depth: 0
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Configure Git identity
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+      - name: Rebuild and publish bundle
+        run: node scripts/build-bundle.mjs --push
