@@ -82,3 +82,14 @@ git push
 
 Use the same workflow with `frontend` or `cli`. The layer commit and the
 superproject pointer commit are separate Git records.
+
+## Generated bundle
+
+The `bundle/` submodule is generated output: it combines the backend, built web
+UI, and CLI into one Bun release that serves everything on port `3000`. Never
+hand-edit generated files in `bundle/`; regenerate them from `main` with:
+
+```bash
+node scripts/build-bundle.mjs
+node scripts/build-bundle.mjs --push
+```
